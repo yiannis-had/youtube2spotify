@@ -1,12 +1,12 @@
 # Youtube2spotify
 
-A simple, fast and clean way to transfer your songs from a Youtube playlist on a new Spotify playlist
+A simple, fast and clean way to transfer your songs from a Youtube playlist on a new Spotify playlist.
 
 # Instructions
 - Install the requirements:
 ` pip install -r requirements.txt `
 
-- **If you have configured access to both APIs skip to the last point.** 
+- **If you have configured access to both APIs skip to the last point.** P.S I have created an executable using PyInstaller, download at your own risk.
 
 - To configure access to the Spotify API go to developer.spotify.com/dashboard/applications , log in and create a client ID / application, it's quite straightforward.
 
