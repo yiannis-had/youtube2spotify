@@ -66,6 +66,8 @@ if token:
         song_video = video['snippet']['title']
         song = re.findall("^[^\(]*", song_video)[0]
         song = song.replace("&", " ")
+        song = song.replace("ft.", " ")
+        song = song.replace("feat", " ")
         song = sp.search(q=song, limit=2)
         try:
             song_url = song['tracks']['items'][0]['external_urls']['spotify']
