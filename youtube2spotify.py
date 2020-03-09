@@ -70,9 +70,8 @@ if token:
         try:
             song_url = song['tracks']['items'][0]['external_urls']['spotify']
             list_song_url = [song_url]
+            sp.user_playlist_add_tracks( spotify_keys["spotify_user_id"], new_playlist['external_urls']['spotify'], list_song_url)
         except:
             pass
-        sp.user_playlist_add_tracks(
-            spotify_keys["spotify_user_id"], new_playlist['external_urls']['spotify'], list_song_url)
 else:
     print("Can't get token for", spotify_keys["spotify_user_id"])
