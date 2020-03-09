@@ -46,11 +46,15 @@ token = util.prompt_for_user_token(spotify_keys["spotify_user_id"],
 
 if token:
     sp = spotipy.Spotify(auth=token)    
-    playlist_name = input("Enter the new Spotify playlist's name:")
+    playlist_name = input("Enter a unique name for your new Spotify playlist:")
     new_playlist = sp.user_playlist_create(user=spotify_keys["spotify_user_id"], name=playlist_name)
+    song_list = []
     for video in videos:
         song_video = video['snippet']['title']
         song = re.findall("^[^\(]*", song_video)[0]
         song = sp.search(q=song)
+        song_url = song['tracks']['items'][0]['external_urls']['spotify']
+        song_list.append(song_url)
+    sp.user_playlist_add_tracks(spotify_keys["spotify_user_id"],new_playlist['external_urls']['spotify'],song_list)
 else:
     print("Can't get token for", spotify_keys["spotify_user_id"])
