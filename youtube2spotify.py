@@ -64,11 +64,14 @@ if token:
         user=spotify_keys["spotify_user_id"], name=playlist_name, public=False)
     for video in videos:
         song_video = video['snippet']['title']
+        song_video = song_video.lower()
         song = re.findall("^[^\(]*", song_video)[0]
+        song = re.findall("^[^\[]*", song)[0]
+        song = re.findall("^[^|]*", song)[0]
         song = song.replace("&", " ")
         song = song.replace("ft.", " ")
-        song = song.replace("feat", " ")
-        song = sp.search(q=song, limit=2)
+        songg = song.replace("feat", " ")
+        song = sp.search(q=songg, limit=1)
         try:
             song_url = song['tracks']['items'][0]['external_urls']['spotify']
             list_song_url = [song_url]
