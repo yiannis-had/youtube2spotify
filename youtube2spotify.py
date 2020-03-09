@@ -5,6 +5,7 @@ import json
 import sys
 import spotipy
 import spotipy.util as util
+import re
 
 google_scopes = ["https://www.googleapis.com/auth/youtube.readonly"]
 
@@ -19,7 +20,9 @@ credentials = flow.run_console()
 youtube = googleapiclient.discovery.build(
     api_service_name, api_version, credentials=credentials)
 
-playlistid = input("Enter the YouTube playlist's ID:")
+playlist = input("Paste the YouTube playlist's ID (Example: https://www.youtube.com/playlist?list=PL4o29bINVT4EG):")
+playlistid = re.findall("list=(.*)", playlist)[0]
+
 
 request = youtube.playlistItems().list(
     part="snippet,contentDetails",
@@ -46,8 +49,8 @@ if token:
     playlist_name = input("Enter the new Spotify playlist's name:")
     new_playlist = sp.user_playlist_create(user=spotify_keys["spotify_user_id"], name=playlist_name)
     for video in videos:
-        print(video['snippet']['title'])
-        song = sp.search(q=video['snippet']['title'])
-        print(song)
+        song_video = video['snippet']['title']
+        song = re.findall("^[^\(]*", song_video)[0]
+        song = sp.search(q=song)
 else:
     print("Can't get token for", spotify_keys["spotify_user_id"])
