@@ -8,7 +8,7 @@ A simple, fast and clean way to transfer your songs from a Youtube playlist on a
 
 - **If you have configured access to both APIs skip to the last point.**
 
-- To configure access to the Spotify API go to https://developer.spotify.com/dashboard/applications , log in and create a client ID / application, it's quite straightforward.
+- To configure access to the Spotify API go to https://developer.spotify.com/dashboard/applications , log in and create a client ID / application, following the steps. After you are in your app's dashboard add https://www.google.com as a Redirect URI
 
 - To configure access to the Google API go to https://console.developers.google.com , log in and create a project. Click on ENABLE APIs AND SERVICES and search for "youtube api v3". Click on ENABLE. Go to https://console.developers.google.com/apis/credentials, click on CREATE CREDENTIALS and select OAuth client ID, select Other , give it a name and create it.
 

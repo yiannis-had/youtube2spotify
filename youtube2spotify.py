@@ -38,7 +38,7 @@ while ('nextPageToken' in res):
         maxResults="50",
         pageToken=nextPageToken
     ).execute()
-    res['items'] = res['items'] + nextPage['items']
+    res['items'] += nextPage['items']
 
     if 'nextPageToken' not in nextPage:
         res.pop('nextPageToken', None)
