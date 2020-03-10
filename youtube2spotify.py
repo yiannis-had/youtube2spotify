@@ -70,7 +70,7 @@ if token:
         song = re.findall("^[^|]*", song)[0]
         song = song.replace("&", " ")
         song = song.replace("ft.", " ")
-        songg = song.replace("feat", " ")
+        songg = song.replace("feat.", " ")
         song = sp.search(q=songg, limit=1)
         try:
             song_url = song['tracks']['items'][0]['external_urls']['spotify']
