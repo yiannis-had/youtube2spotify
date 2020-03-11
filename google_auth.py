@@ -1,8 +1,6 @@
 import functools
 import os
-
 import flask
-
 from authlib.integrations.requests_client import OAuth2Session
 import google.oauth2.credentials
 import googleapiclient.discovery
@@ -16,8 +14,8 @@ AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
 
 AUTH_REDIRECT_URI = os.environ.get("AUTH_REDIRECT_URI", default=False)
 BASE_URI = os.environ.get("BASE_URI", default=False)
-CLIENT_ID = os.environ.get("CLIENT_ID", default=False)
-CLIENT_SECRET = os.environ.get("CLIENT_SECRET", default=False)
+GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", default=False)
+GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", default=False)
 
 AUTH_TOKEN_KEY = "token"
 AUTH_STATE_KEY = "state"
@@ -38,8 +36,8 @@ def build_credentials():
     return google.oauth2.credentials.Credentials(
         oauth2_tokens["access_token"],
         refresh_token=oauth2_tokens["refresh_token"],
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
+        client_id=GOOGLE_CLIENT_ID,
+        client_secret=GOOGLE_CLIENT_SECRET,
         token_uri=ACCESS_TOKEN_URI,
     )
 
@@ -72,8 +70,8 @@ def no_cache(view):
 @no_cache
 def login():
     session = OAuth2Session(
-        CLIENT_ID,
-        CLIENT_SECRET,
+        GOOGLE_CLIENT_ID,
+        GOOGLE_CLIENT_SECRET,
         scope=AUTHORIZATION_SCOPE,
         redirect_uri=AUTH_REDIRECT_URI,
     )
@@ -96,8 +94,8 @@ def google_auth_redirect():
         return response
 
     session = OAuth2Session(
-        CLIENT_ID,
-        CLIENT_SECRET,
+        GOOGLE_CLIENT_ID,
+        GOOGLE_CLIENT_SECRET,
         scope=AUTHORIZATION_SCOPE,
         state=flask.session[AUTH_STATE_KEY],
         redirect_uri=AUTH_REDIRECT_URI,
