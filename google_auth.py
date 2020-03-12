@@ -76,12 +76,11 @@ def login():
         redirect_uri=AUTH_REDIRECT_URI,
     )
 
-    uri, state = session.create_authorization_url(AUTHORIZATION_URL)
+    authorization_url, state = session.create_authorization_url(AUTHORIZATION_URL)
 
     flask.session[AUTH_STATE_KEY] = state
     flask.session.permanent = True
-
-    return flask.redirect(uri)
+    return flask.redirect(authorization_url)
 
 
 @app.route("/google/auth")
@@ -101,7 +100,7 @@ def google_auth_redirect():
         redirect_uri=AUTH_REDIRECT_URI,
     )
 
-    oauth2_tokens = session.fetch_access_token(
+    oauth2_tokens = session.fetch_token(
         ACCESS_TOKEN_URI, authorization_response=flask.request.url
     )
 

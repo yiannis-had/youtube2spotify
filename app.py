@@ -17,6 +17,6 @@ app.register_blueprint(spotify_auth.app)
 @app.route("/")
 def index():
     if google_auth.is_logged_in():
-        return flask.redirect("http://localhost:8040/spotify/login")
+        return flask.redirect("http://localhost:8040/spotify/callback")
 
     return "You are not currently logged in."
