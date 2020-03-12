@@ -10,28 +10,28 @@ AUTHORIZATION_URL = (
     "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent"
 )
 
-AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
+GOOGLE_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
 
 AUTH_REDIRECT_URI = os.environ.get("AUTH_REDIRECT_URI", default=False)
 BASE_URI = os.environ.get("BASE_URI", default=False)
 GOOGLE_CLIENT_ID = os.environ.get("GOOGLE_CLIENT_ID", default=False)
 GOOGLE_CLIENT_SECRET = os.environ.get("GOOGLE_CLIENT_SECRET", default=False)
 
-AUTH_TOKEN_KEY = "token"
-AUTH_STATE_KEY = "state"
+GOOGLE_AUTH_TOKEN_KEY = "token"
+GOOGLE_AUTH_STATE_KEY = "state"
 
 app = flask.Blueprint("google_auth", __name__)
 
 
 def is_logged_in():
-    return True if AUTH_TOKEN_KEY in flask.session else False
+    return True if GOOGLE_AUTH_TOKEN_KEY in flask.session else False
 
 
 def build_credentials():
     if not is_logged_in():
         raise Exception("User must be logged in")
 
-    oauth2_tokens = flask.session[AUTH_TOKEN_KEY]
+    oauth2_tokens = flask.session[GOOGLE_AUTH_TOKEN_KEY]
 
     return google.oauth2.credentials.Credentials(
         oauth2_tokens["access_token"],
@@ -72,13 +72,13 @@ def login():
     session = OAuth2Session(
         GOOGLE_CLIENT_ID,
         GOOGLE_CLIENT_SECRET,
-        scope=AUTHORIZATION_SCOPE,
+        scope=GOOGLE_SCOPE,
         redirect_uri=AUTH_REDIRECT_URI,
     )
 
     authorization_url, state = session.create_authorization_url(AUTHORIZATION_URL)
 
-    flask.session[AUTH_STATE_KEY] = state
+    flask.session[GOOGLE_AUTH_STATE_KEY] = state
     flask.session.permanent = True
     return flask.redirect(authorization_url)
 
@@ -86,17 +86,17 @@ def login():
 @app.route("/google/auth")
 @no_cache
 def google_auth_redirect():
-    req_state = flask.request.args.get("state", default=flask.session[AUTH_STATE_KEY])
+    req_state = flask.request.args.get("state", default=flask.session[GOOGLE_AUTH_STATE_KEY])
 
-    if req_state != flask.session[AUTH_STATE_KEY]:
+    if req_state != flask.session[GOOGLE_AUTH_STATE_KEY]:
         response = flask.make_response("Invalid state parameter", 401)
         return response
 
     session = OAuth2Session(
         GOOGLE_CLIENT_ID,
         GOOGLE_CLIENT_SECRET,
-        scope=AUTHORIZATION_SCOPE,
-        state=flask.session[AUTH_STATE_KEY],
+        scope=GOOGLE_SCOPE,
+        state=flask.session[GOOGLE_AUTH_STATE_KEY],
         redirect_uri=AUTH_REDIRECT_URI,
     )
 
@@ -104,7 +104,7 @@ def google_auth_redirect():
         ACCESS_TOKEN_URI, authorization_response=flask.request.url
     )
 
-    flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
+    flask.session[GOOGLE_AUTH_TOKEN_KEY] = oauth2_tokens
 
     return flask.redirect(BASE_URI)
 
@@ -112,7 +112,7 @@ def google_auth_redirect():
 @app.route("/google/logout")
 @no_cache
 def logout():
-    flask.session.pop(AUTH_TOKEN_KEY, None)
-    flask.session.pop(AUTH_STATE_KEY, None)
+    flask.session.pop(GOOGLE_AUTH_TOKEN_KEY, None)
+    flask.session.pop(GOOGLE_AUTH_STATE_KEY, None)
 
     return flask.redirect(BASE_URI)
