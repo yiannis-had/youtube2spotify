@@ -38,7 +38,7 @@ def spotify_login():
 @no_cache
 def spotify_token():
     oauth = OAuth2Session(SPOTIFY_CLIENT_ID, redirect_uri=SPOTIFY_REDIRECT_URI, scope=SPOTIFY_SCOPE)
-    token = oauth.fetch_token("https://accounts.spotify.com/api/token", grant_type="authorization_code", code="response_type" , redirect_uri=SPOTIFY_REDIRECT_URI)
+    token = oauth.fetch_token("https://accounts.spotify.com/api/token", grant_type="authorization_code", code="" , redirect_uri=SPOTIFY_REDIRECT_URI)
 
 @app.route("/spotify/logout")
 @no_cache
