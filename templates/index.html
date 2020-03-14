@@ -2,12 +2,37 @@
 {% block title %}Spotify Login{% endblock %}
 {% block header %}Youtube2Spotify{% endblock %}
 {% block footer %}
-<form>
-    <label for="youtube_playlist">YouTube Playlist link</label><br>
-    <input type="url" id="youtube_playlist" name="youtube_playlist" value="https://www.youtube.com/playlist?list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG" size="150"><br>
-    <label for="spotify_playlist">New Spotify Playlist name:</label><br>
-    <input type="text" id="spotify_playlist" name="spotify_playlist" value="My New Playlist" size="150"><br><br>
-  </form>
-<input type="submit" value="Submit" class="btn btn-success btn-xs" class="text-truncate">
+<form method="POST" action="">
+  {{ form.hidden_tag() }}
+  <fieldset class="form-group">
+      <div class="form-group">
+          {{ form.youtube_playlist.label(class="form-control-label") }}
+          {% if form.youtube_playlist.errors %}
+              {{ form.youtube_playlist(class="form-control form-control-lg is-invalid") }}
+              <div class="invalid-feedback">
+                  {% for error in form.youtube_playlist.errors %}
+                      <span>{{ error }}</span>
+                  {% endfor %}
+              </div>
+          {% else %}
+              {{ form.youtube_playlist(class="form-control form-control-lg", placeholder="https://www.youtube.com/playlist?list=PLx0sYbCqOb8TBPRdmBHs5Iftvv9TPboYG") }}
+          {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.spotify_playlist_name.label(class="form-control-label") }}
+        {% if form.spotify_playlist_name.errors %}
+            {{ form.spotify_playlist_name(class="form-control form-control-lg is-invalid") }}
+            <div class="invalid-feedback">
+                {% for error in form.spotify_playlist_name.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% else %}
+            {{ form.spotify_playlist_name(class="form-control form-control-lg", placeholder="New Playlist") }}
+        {% endif %}
+      </div>
+      <div class="form-group">
+        {{ form.submit(class="btn btn-success btn-xs") }}
+      </div>
 <a href="/login" class="btn btn-primary">Login with Spotify</a>
 {% endblock %}

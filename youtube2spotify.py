@@ -17,6 +17,9 @@ from flask import (
 import json
 import requests
 from urllib.parse import urlencode
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired, Length
 
 app = flask.Flask(__name__)
 app.secret_key = "12345"
@@ -45,11 +48,21 @@ AUTH_URL = 'https://accounts.spotify.com/authorize'
 TOKEN_URL = 'https://accounts.spotify.com/api/token'
 ME_URL = 'https://api.spotify.com/v1/me'
 
+class InfoForm(FlaskForm):
+    youtube_playlist = StringField("YouTube Playlist URL:",
+                        validators=[DataRequired()])
+    spotify_playlist_name = StringField("New Spotify Playlist name:",
+                        validators=[DataRequired()])
+    submit = SubmitField("Submit")
 
-@app.route("/")
+form = None
+
+@app.route("/", methods =["GET", "POST"])
 def index():
     if is_logged_in():
-        return render_template('index.html')
+        global form
+        form = InfoForm()
+        return render_template('index.html', form=form)
     else:
         return flask.redirect(BASE_URI + "/google/login")
 
@@ -244,7 +257,8 @@ def refresh():
 @app.route('/me')
 def me():
     youtube = get_oauth_client()
-    playlist = "https://www.youtube.com/playlist?list=PLqocYqyvwf0PqSgO0hjx2d8ytTCNqbqF2"
+    playlist = form.youtube_playlist.data
+    print(playlist)
     playlistid = re.findall("list=(.*)", playlist)[0]
 
     req = youtube.playlistItems().list(
@@ -280,7 +294,7 @@ def me():
     headers = {"Authorization": f"Bearer {session['tokens'].get('access_token')}"}
     res = requests.get(ME_URL, headers=headers)
     res_data = res.json()
-    payload = {'name': '1234xd'}
+    payload = {'name': form.spotify_playlist_name.data}
     user_id = res_data['display_name']
     req_playlist = requests.post("https://api.spotify.com/v1/users/" + user_id + "/playlists",json=payload, headers=headers)
     new_playlist_url = req_playlist.json()["id"]
