@@ -1,5 +1,4 @@
 import re
-import spotipy
 import functools
 import flask
 from authlib.integrations.requests_client import OAuth2Session
@@ -16,10 +15,7 @@ from flask import (
     url_for,
 )
 import json
-import os
 import requests
-import secrets
-import string
 from urllib.parse import urlencode
 
 app = flask.Flask(__name__)
@@ -285,7 +281,7 @@ def me():
     res = requests.get(ME_URL, headers=headers)
     res_data = res.json()
     payload = {'name': '1234xd'}
-    user_id = res_data['display_name']
+    #user_id = res_data['display_name']
     req_playlist = requests.post("https://api.spotify.com/v1/users/yiannis.had/playlists",json=payload, headers=headers)
     new_playlist_url = req_playlist.json()["id"]
 
@@ -311,13 +307,6 @@ def me():
                 "uris": [song_url]
             }
             add_songs_to_playlist = requests.post("https://api.spotify.com/v1/playlists/" + new_playlist_url +"/tracks",json=payload ,headers=headers)
-            '''
-            sp.user_playlist_add_tracks(
-                SPOTIFY_USER_ID,
-                new_playlist["external_urls"]["spotify"],
-                list_song_url,
-            )
-            '''
         except:
             pass
 
