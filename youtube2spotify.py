@@ -288,7 +288,6 @@ def me():
     user_id = res_data['display_name']
     req_playlist = requests.post("https://api.spotify.com/v1/users/yiannis.had/playlists",json=payload, headers=headers)
     new_playlist_url = req_playlist.json()["id"]
-    print(new_playlist_url)
 
     for video in videos:
         song_video = video["snippet"]["title"]
@@ -308,7 +307,6 @@ def me():
         song = song.json()
         try:
             song_url = song["tracks"]["items"][0]["uri"]
-            print(song_url)
             payload = {
                 "uris": [song_url]
             }
