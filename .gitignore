@@ -1,7 +1,3 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-# Environment keys
-run.bat
-# JSON
-spotify.json

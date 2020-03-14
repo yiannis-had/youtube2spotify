@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% block head %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" crossorigin="anonymous">
+
+    <title>{% block title %}{% endblock %}</title>
+    {% endblock %}
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="mt-3 mb-3 text-center">{% block header %}{% endblock %}</h1>
+      <div id="content">{% block content %}{% endblock %}</div>
+      <div id="footer" class="text-center">{% block footer %}{% endblock %}</div>
+  </div>
+  </body>
+</html>
