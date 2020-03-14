@@ -281,8 +281,8 @@ def me():
     res = requests.get(ME_URL, headers=headers)
     res_data = res.json()
     payload = {'name': '1234xd'}
-    #user_id = res_data['display_name']
-    req_playlist = requests.post("https://api.spotify.com/v1/users/yiannis.had/playlists",json=payload, headers=headers)
+    user_id = res_data['display_name']
+    req_playlist = requests.post("https://api.spotify.com/v1/users/" + user_id + "/playlists",json=payload, headers=headers)
     new_playlist_url = req_playlist.json()["id"]
 
     for video in videos:
