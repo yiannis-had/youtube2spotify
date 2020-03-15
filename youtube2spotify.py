@@ -313,6 +313,7 @@ def me():
         headers=headers,
     )
     new_playlist_url = req_playlist.json()["id"]
+    new_playlist_link = req_playlist.json()
 
     for video in videos:
         song_video = video["snippet"]["title"]
@@ -346,7 +347,7 @@ def me():
         )
         abort(res.status_code)
 
-    return render_template("me.html", data=res_data, tokens=session.get("tokens"))
+    return render_template("me.html", data=res_data, playlist=new_playlist_url, tokens=session.get("tokens"))
 
 
 if __name__ == "__main__":
