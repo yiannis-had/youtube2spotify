@@ -27,19 +27,19 @@ app.secret_key = "12345"
 ACCESS_TOKEN_URI = "https://www.googleapis.com/oauth2/v4/token"
 AUTHORIZATION_URL = "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent"
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
-BASE_URI = "http://localhost:8040"
+BASE_URI = "http://youtube-2-spotify.herokuapp.com"
 AUTH_REDIRECT_URI = BASE_URI + "/google/auth"
 
 
 GOOGLE_CLIENT_ID = "506388520559-0mn2jf5641ijafhros4cfb7t5utb2ui4.apps.googleusercontent.com"
-GOOGLE_CLIENT_SECRET = "fvLT1S04r56hmquWL9_OW0TZ"
+GOOGLE_CLIENT_SECRET = "NkmMXpX8z27hjEfgrqwB079X"
 
 AUTH_TOKEN_KEY = "token"
 AUTH_STATE_KEY = "state"
 
 # Client info
 SPOTIFY_CLIENT_ID = "112e06f8eabb4e27864d615061ed3af5"
-SPOTIFY_CLIENT_SECRET = "b89b18d6e0fb4845a0af5448bf0fc222"
+SPOTIFY_CLIENT_SECRET = "9f1b4234f7dc427ebab94ac2561cc180"
 SPOTIFY_REDIRECT_URI = BASE_URI + "/callback"
 
 
@@ -57,15 +57,14 @@ class InfoForm(FlaskForm):
 
 form = None
 
-@app.route("/", methods =["GET", "POST"])
+@app.route("/", methods = ["GET", "POST"])
 def index():
     if is_logged_in():
         global form
         form = InfoForm()
         return render_template('index.html', form=form)
     else:
-        return flask.redirect(BASE_URI + "/google/login")
-
+        return redirect(url_for("google_login"))
 
 
 def is_logged_in():
@@ -151,7 +150,7 @@ def google_auth_redirect():
 
     flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
 
-    return flask.redirect(BASE_URI)
+    return flask.redirect(url_for("index"))
 
 
 @app.route("/google/logout")
@@ -160,7 +159,7 @@ def logout():
     flask.session.pop(AUTH_TOKEN_KEY, None)
     flask.session.pop(AUTH_STATE_KEY, None)
 
-    return flask.redirect(BASE_URI)
+    return flask.redirect(url_for("index"))
 
 
 @app.route('/<loginout>')
