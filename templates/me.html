@@ -2,7 +2,6 @@
 {% block title %}Youtube2Spotify{% endblock %}
 {% block content %}
 
-<!-- Response Data -->
 <div id="profile" class="media">
   {% if data.images %}
   <div class="mr-4">
@@ -22,14 +21,6 @@
 
 {% block footer %}
 <a href="/logout" class="btn btn-danger btn-xs">Logout</a>
-
-
-{% raw %}
-<script id="token-template" type="text/x-handlebars-template">
-  <dt>Access token</dt><dd class="text-truncate">{{access_token}}</dd>
-  <dt>Refresh token</dt><dd class="text-truncate">{{refresh_token}}</dd>
-</script>
-{% endraw %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.3/handlebars.js"></script>
 
