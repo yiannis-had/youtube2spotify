@@ -2,4 +2,7 @@
 
 A simple, fast and clean website to transfer your songs from a Youtube playlist on a new Spotify playlist.
 
-## http://youtube-2-spotify.herokuapp.com/
+## http://youtube-2-spotify.herokuapp.com/ 
+
+- Authenticate with Google to be able to access your private YouTube playlists. 
+- After submitting your YouTube playlist URL and your new Spotify playlist's name, click on Log in With Spotify to also authenticate with Spotify.
