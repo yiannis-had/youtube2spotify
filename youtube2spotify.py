@@ -25,13 +25,17 @@ app = flask.Flask(__name__)
 app.secret_key = "12345"
 
 ACCESS_TOKEN_URI = "https://www.googleapis.com/oauth2/v4/token"
-AUTHORIZATION_URL = "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent"
+AUTHORIZATION_URL = (
+    "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent"
+)
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
 BASE_URI = "http://youtube-2-spotify.herokuapp.com"
 AUTH_REDIRECT_URI = BASE_URI + "/google/auth"
 
 
-GOOGLE_CLIENT_ID = "506388520559-0mn2jf5641ijafhros4cfb7t5utb2ui4.apps.googleusercontent.com"
+GOOGLE_CLIENT_ID = (
+    "506388520559-0mn2jf5641ijafhros4cfb7t5utb2ui4.apps.googleusercontent.com"
+)
 GOOGLE_CLIENT_SECRET = "NkmMXpX8z27hjEfgrqwB079X"
 
 AUTH_TOKEN_KEY = "token"
@@ -44,25 +48,28 @@ SPOTIFY_REDIRECT_URI = BASE_URI + "/callback"
 
 
 # Spotify API endpoints
-AUTH_URL = 'https://accounts.spotify.com/authorize'
-TOKEN_URL = 'https://accounts.spotify.com/api/token'
-ME_URL = 'https://api.spotify.com/v1/me'
+AUTH_URL = "https://accounts.spotify.com/authorize"
+TOKEN_URL = "https://accounts.spotify.com/api/token"
+ME_URL = "https://api.spotify.com/v1/me"
+
 
 class InfoForm(FlaskForm):
-    youtube_playlist = StringField("YouTube Playlist URL:",
-                        validators=[DataRequired()])
-    spotify_playlist_name = StringField("New Spotify Playlist name:",
-                        validators=[DataRequired()])
+    youtube_playlist = StringField("YouTube Playlist URL:", validators=[DataRequired()])
+    spotify_playlist_name = StringField(
+        "New Spotify Playlist name:", validators=[DataRequired()]
+    )
     submit = SubmitField("Submit")
+
 
 form = None
 
-@app.route("/", methods = ["GET", "POST"])
+
+@app.route("/", methods=["GET", "POST"])
 def index():
     if is_logged_in():
         global form
         form = InfoForm()
-        return render_template('index.html', form=form)
+        return render_template("index.html", form=form)
     else:
         return redirect(url_for("google_login"))
 
@@ -162,98 +169,103 @@ def logout():
     return flask.redirect(url_for("index"))
 
 
-@app.route('/<loginout>')
+@app.route("/<loginout>")
 def login(loginout):
-    '''Login or logout user.
+    """Login or logout user.
 
     Note:
         Login and logout process are essentially the same. Logout forces
         re-login to appear, even if their token hasn't expired.
-    '''
+    """
 
     # Request authorization from user
-    scope = 'user-read-private user-read-email playlist-modify-public playlist-modify-private'
+    scope = "user-read-private user-read-email playlist-modify-public playlist-modify-private"
 
-    if loginout == 'logout':
+    if loginout == "logout":
         payload = {
-            'client_id': SPOTIFY_CLIENT_ID,
-            'response_type': 'code',
-            'redirect_uri': SPOTIFY_REDIRECT_URI,
-            'scope': scope,
-            'show_dialog': True,
+            "client_id": SPOTIFY_CLIENT_ID,
+            "response_type": "code",
+            "redirect_uri": SPOTIFY_REDIRECT_URI,
+            "scope": scope,
+            "show_dialog": True,
         }
-    elif loginout == 'login':
+    elif loginout == "login":
         payload = {
-            'client_id': SPOTIFY_CLIENT_ID,
-            'response_type': 'code',
-            'redirect_uri': SPOTIFY_REDIRECT_URI,
-            'scope': scope,
+            "client_id": SPOTIFY_CLIENT_ID,
+            "response_type": "code",
+            "redirect_uri": SPOTIFY_REDIRECT_URI,
+            "scope": scope,
         }
     else:
         abort(404)
 
-    res = make_response(redirect(f'{AUTH_URL}/?{urlencode(payload)}'))
+    res = make_response(redirect(f"{AUTH_URL}/?{urlencode(payload)}"))
 
     return res
 
 
-@app.route('/callback')
+@app.route("/callback")
 def callback():
-    error = request.args.get('error')
-    code = request.args.get('code')
-    stored_state = request.cookies.get('spotify_auth_state')
+    error = request.args.get("error")
+    code = request.args.get("code")
+    stored_state = request.cookies.get("spotify_auth_state")
 
     # Request tokens with code we obtained
     payload = {
-        'grant_type': 'authorization_code',
-        'code': code,
-        'redirect_uri': SPOTIFY_REDIRECT_URI,
+        "grant_type": "authorization_code",
+        "code": code,
+        "redirect_uri": SPOTIFY_REDIRECT_URI,
     }
 
     # `auth=(SPOTIFY_CLIENT_ID, SECRET)` basically wraps an 'Authorization'
     # header with value:
     # b'Basic ' + b64encode((SPOTIFY_CLIENT_ID + ':' + SECRET).encode())
-    res = requests.post(TOKEN_URL, auth=(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET), data=payload)
+    res = requests.post(
+        TOKEN_URL, auth=(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET), data=payload
+    )
     res_data = res.json()
 
-    if res_data.get('error') or res.status_code != 200:
+    if res_data.get("error") or res.status_code != 200:
         app.logger.error(
-            'Failed to receive token: %s',
-            res_data.get('error', 'No error information received.'),
+            "Failed to receive token: %s",
+            res_data.get("error", "No error information received."),
         )
         abort(res.status_code)
 
     # Load tokens into session
-    session['tokens'] = {
-        'access_token': res_data.get('access_token'),
-        'refresh_token': res_data.get('refresh_token'),
+    session["tokens"] = {
+        "access_token": res_data.get("access_token"),
+        "refresh_token": res_data.get("refresh_token"),
     }
 
-    return redirect(url_for('me'))
+    return redirect(url_for("me"))
 
 
-@app.route('/refresh')
+@app.route("/refresh")
 def refresh():
-    '''Refresh access token.'''
+    """Refresh access token."""
 
     payload = {
-        'grant_type': 'refresh_token',
-        'refresh_token': session.get('tokens').get('refresh_token'),
+        "grant_type": "refresh_token",
+        "refresh_token": session.get("tokens").get("refresh_token"),
     }
-    headers = {'Content-Type': 'application/x-www-form-urlencoded'}
+    headers = {"Content-Type": "application/x-www-form-urlencoded"}
 
     res = requests.post(
-        TOKEN_URL, auth=(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET), data=payload, headers=headers
+        TOKEN_URL,
+        auth=(SPOTIFY_CLIENT_ID, SPOTIFY_CLIENT_SECRET),
+        data=payload,
+        headers=headers,
     )
     res_data = res.json()
 
     # Load new token into session
-    session['tokens']['access_token'] = res_data.get('access_token')
+    session["tokens"]["access_token"] = res_data.get("access_token")
 
-    return json.dumps(session['tokens'])
+    return json.dumps(session["tokens"])
 
 
-@app.route('/me')
+@app.route("/me")
 def me():
     youtube = get_oauth_client()
     playlist = form.youtube_playlist.data
@@ -285,17 +297,21 @@ def me():
             nextPageToken = nextPage["nextPageToken"]
     videos = res["items"]
     # Check for tokens
-    if 'tokens' not in session:
-        app.logger.error('No tokens in session.')
+    if "tokens" not in session:
+        app.logger.error("No tokens in session.")
         abort(400)
 
     # Get profile info
     headers = {"Authorization": f"Bearer {session['tokens'].get('access_token')}"}
     res = requests.get(ME_URL, headers=headers)
     res_data = res.json()
-    payload = {'name': form.spotify_playlist_name.data}
-    user_id = res_data['display_name']
-    req_playlist = requests.post("https://api.spotify.com/v1/users/" + user_id + "/playlists",json=payload, headers=headers)
+    payload = {"name": form.spotify_playlist_name.data, "public": False}
+    user_id = res_data["display_name"]
+    req_playlist = requests.post(
+        "https://api.spotify.com/v1/users/" + user_id + "/playlists",
+        json=payload,
+        headers=headers,
+    )
     new_playlist_url = req_playlist.json()["id"]
 
     for video in videos:
@@ -307,30 +323,31 @@ def me():
         song = song.replace("&", " ")
         song = song.replace("ft.", " ")
         songg = song.replace("feat.", " ")
-        payload = {
-            "q": songg,
-            "limit": "1",
-            "type": "track"
-        }
-        song = requests.get("https://api.spotify.com/v1/search", params=payload, headers=headers)
+        payload = {"q": songg, "limit": "1", "type": "track"}
+        song = requests.get(
+            "https://api.spotify.com/v1/search", params=payload, headers=headers
+        )
         song = song.json()
         try:
             song_url = song["tracks"]["items"][0]["uri"]
-            payload = {
-                "uris": [song_url]
-            }
-            add_songs_to_playlist = requests.post("https://api.spotify.com/v1/playlists/" + new_playlist_url +"/tracks",json=payload ,headers=headers)
+            payload = {"uris": [song_url]}
+            add_songs_to_playlist = requests.post(
+                "https://api.spotify.com/v1/playlists/" + new_playlist_url + "/tracks",
+                json=payload,
+                headers=headers,
+            )
         except:
             pass
 
     if res.status_code != 200:
         app.logger.error(
-            'Failed to get profile info: %s',
-            res_data.get('error', 'No error message returned.'),
+            "Failed to get profile info: %s",
+            res_data.get("error", "No error message returned."),
         )
         abort(res.status_code)
 
-    return render_template('me.html', data=res_data, tokens=session.get('tokens'))
+    return render_template("me.html", data=res_data, tokens=session.get("tokens"))
+
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8040) 
+    app.run(debug=True, port=8040)
