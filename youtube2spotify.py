@@ -347,7 +347,12 @@ def me():
         )
         abort(res.status_code)
 
-    return render_template("me.html", data=res_data, playlist=new_playlist_link, tokens=session.get("tokens"))
+    return render_template(
+        "me.html",
+        data=res_data,
+        playlist=new_playlist_link,
+        tokens=session.get("tokens"),
+    )
 
 
 if __name__ == "__main__":
