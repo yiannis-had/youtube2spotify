@@ -71,8 +71,9 @@ def index():
         form = InfoForm()
         return render_template("index.html", form=form)
     else:
-        return redirect(url_for("google_login"))
+        return redirect(url_for("welcome"))
 
+@app.route("/welcome")
 def welcome():
     return render_template("welcome.html")
 
