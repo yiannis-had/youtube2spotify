@@ -73,6 +73,8 @@ def index():
     else:
         return redirect(url_for("google_login"))
 
+def welcome():
+    return render_template("welcome.html")
 
 def is_logged_in():
     return True if AUTH_TOKEN_KEY in flask.session else False
