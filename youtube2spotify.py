@@ -269,7 +269,7 @@ def refresh():
 @app.route("/me")
 def me():
     youtube = get_oauth_client()
-    playlist = request.form["youtube_playlist"]
+    playlist = request.form.get("youtube_playlist")
     playlistid = re.findall("list=(.*)", playlist)[0]
 
     req = youtube.playlistItems().list(
@@ -305,7 +305,7 @@ def me():
         "Authorization": f"Bearer {session['tokens'].get('access_token')}"}
     res = requests.get(ME_URL, headers=headers)
     res_data = res.json()
-    payload = {"name": request.form["spotify_playlist_name"], "public": False}
+    payload = {"name": request.form.get("spotify_playlist_name"), "public": False}
     user_id = res_data["display_name"]
     req_playlist = requests.post(
         "https://api.spotify.com/v1/users/" + user_id + "/playlists",
