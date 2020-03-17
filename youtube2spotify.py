@@ -29,7 +29,7 @@ AUTHORIZATION_URL = (
     "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent"
 )
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
-BASE_URI = "http://youtube-2-spotify.herokuapp.com"
+BASE_URI = "http://youtube-2-spotify.herokuapp.com/"
 AUTH_REDIRECT_URI = BASE_URI + "/google/auth"
 
 
@@ -269,7 +269,7 @@ def refresh():
 @app.route("/me")
 def me():
     youtube = get_oauth_client()
-    playlist = request.form.get("youtube_playlist")
+    playlist = str(form.youtube_playlist.data)
     playlistid = re.findall("list=(.*)", playlist)[0]
 
     req = youtube.playlistItems().list(
@@ -305,7 +305,7 @@ def me():
         "Authorization": f"Bearer {session['tokens'].get('access_token')}"}
     res = requests.get(ME_URL, headers=headers)
     res_data = res.json()
-    payload = {"name": request.form.get("spotify_playlist_name"), "public": False}
+    payload = {"name": form.spotify_playlist_name.data, "public": False}
     user_id = res_data["display_name"]
     req_playlist = requests.post(
         "https://api.spotify.com/v1/users/" + user_id + "/playlists",
@@ -318,14 +318,14 @@ def me():
     for video in videos:
         song_video = video["snippet"]["title"]
         song_video = song_video.lower()
+        if song_video == "private video":
+            continue
         song = re.findall("^[^\(]*", song_video)[0]
         song = re.findall("^[^\[]*", song)[0]
         song = re.findall("^[^|]*", song)[0]
         song = song.replace("&", " ")
         song = song.replace("ft.", " ")
         songg = song.replace("feat.", " ")
-        if songg == "private video":
-            pass
         payload = {"q": songg, "limit": "1", "type": "track"}
         song = requests.get(
             "https://api.spotify.com/v1/search", params=payload, headers=headers
@@ -340,7 +340,7 @@ def me():
                 headers=headers,
             )
         except:
-            pass
+            continue
 
     if res.status_code != 200:
         app.logger.error(
@@ -358,4 +358,4 @@ def me():
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
