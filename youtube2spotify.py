@@ -324,6 +324,8 @@ def me():
         song = song.replace("&", " ")
         song = song.replace("ft.", " ")
         songg = song.replace("feat.", " ")
+        if songg == "private video":
+            pass
         payload = {"q": songg, "limit": "1", "type": "track"}
         song = requests.get(
             "https://api.spotify.com/v1/search", params=payload, headers=headers
