@@ -270,7 +270,6 @@ def refresh():
 def me():
     youtube = get_oauth_client()
     playlist = form.youtube_playlist.data
-    print(playlist)
     playlistid = re.findall("list=(.*)", playlist)[0]
 
     req = youtube.playlistItems().list(
