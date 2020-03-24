@@ -36,7 +36,7 @@ AUTH_REDIRECT_URI = BASE_URI + "/google/auth"
 GOOGLE_CLIENT_ID = (
     "506388520559-0mn2jf5641ijafhros4cfb7t5utb2ui4.apps.googleusercontent.com"
 )
-GOOGLE_CLIENT_SECRET = "vom9kZRfDBmj613dEs5UANIE"
+GOOGLE_CLIENT_SECRET = "4mpyDsN6EEFII3efZwURXiPI"
 
 AUTH_TOKEN_KEY = "token"
 AUTH_STATE_KEY = "state"
