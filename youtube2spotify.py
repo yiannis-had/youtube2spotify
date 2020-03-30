@@ -30,16 +30,6 @@ AUTHORIZATION_URL = (
 )
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
 BASE_URI = "http://youtube-2-spotify.herokuapp.com"
-AUTH_REDIRECT_URI = BASE_URI + "/google/auth"
-
-
-GOOGLE_CLIENT_ID = (
-    "506388520559-0mn2jf5641ijafhros4cfb7t5utb2ui4.apps.googleusercontent.com"
-)
-GOOGLE_CLIENT_SECRET = "4mpyDsN6EEFII3efZwURXiPI"
-
-AUTH_TOKEN_KEY = "token"
-AUTH_STATE_KEY = "state"
 
 SPOTIFY_CLIENT_ID = "112e06f8eabb4e27864d615061ed3af5"
 SPOTIFY_CLIENT_SECRET = "b955a3a7719942459fbce48c398094e4"
@@ -64,46 +54,9 @@ form = None
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    if is_logged_in():
-        global form
-        form = InfoForm()
-        return render_template("index.html", form=form)
-    else:
-        return redirect(url_for("welcome"))
-
-
-@app.route("/welcome")
-def welcome():
-    return render_template("welcome.html")
-
-
-def is_logged_in():
-    return True if AUTH_TOKEN_KEY in flask.session else False
-
-
-def build_credentials():
-    if not is_logged_in():
-        raise Exception("User must be logged in")
-
-    oauth2_tokens = flask.session[AUTH_TOKEN_KEY]
-
-    return google.oauth2.credentials.Credentials(
-        oauth2_tokens["access_token"],
-        refresh_token=oauth2_tokens["refresh_token"],
-        client_id=GOOGLE_CLIENT_ID,
-        client_secret=GOOGLE_CLIENT_SECRET,
-        token_uri=ACCESS_TOKEN_URI,
-    )
-
-
-def get_oauth_client():
-    credentials = build_credentials()
-
-    oauth2_client = googleapiclient.discovery.build(
-        "youtube", "v3", credentials=credentials
-    )
-
-    return oauth2_client
+    global form
+    form = InfoForm()
+    return render_template("index.html", form=form)
 
 
 def no_cache(view):
@@ -118,60 +71,6 @@ def no_cache(view):
         return response
 
     return functools.update_wrapper(no_cache_impl, view)
-
-
-@app.route("/google/login")
-@no_cache
-def google_login():
-    session = OAuth2Session(
-        GOOGLE_CLIENT_ID,
-        GOOGLE_CLIENT_SECRET,
-        scope=AUTHORIZATION_SCOPE,
-        redirect_uri=AUTH_REDIRECT_URI,
-    )
-
-    authorization_url, state = session.create_authorization_url(
-        AUTHORIZATION_URL)
-
-    flask.session[AUTH_STATE_KEY] = state
-    flask.session.permanent = True
-    return flask.redirect(authorization_url)
-
-
-@app.route("/google/auth")
-@no_cache
-def google_auth_redirect():
-    req_state = flask.request.args.get(
-        "state", default=flask.session[AUTH_STATE_KEY])
-
-    if req_state != flask.session[AUTH_STATE_KEY]:
-        response = flask.make_response("Invalid state parameter", 401)
-        return response
-
-    session = OAuth2Session(
-        GOOGLE_CLIENT_ID,
-        GOOGLE_CLIENT_SECRET,
-        scope=AUTHORIZATION_SCOPE,
-        state=flask.session[AUTH_STATE_KEY],
-        redirect_uri=AUTH_REDIRECT_URI,
-    )
-
-    oauth2_tokens = session.fetch_token(
-        ACCESS_TOKEN_URI, authorization_response=flask.request.url
-    )
-
-    flask.session[AUTH_TOKEN_KEY] = oauth2_tokens
-
-    return flask.redirect(url_for("index"))
-
-
-@app.route("/google/logout")
-@no_cache
-def logout():
-    flask.session.pop(AUTH_TOKEN_KEY, None)
-    flask.session.pop(AUTH_STATE_KEY, None)
-
-    return flask.redirect(url_for("index"))
 
 
 @app.route("/<loginout>")
@@ -268,7 +167,12 @@ def refresh():
 
 @app.route("/me")
 def me():
-    youtube = get_oauth_client()
+    api_service_name = "youtube"
+    api_version = "v3"
+    DEVELOPER_KEY = "AIzaSyDfIUhOo4_XmVeRLtTuwI-rwZStbs3CeVk"
+
+    youtube = googleapiclient.discovery.build(
+        api_service_name, api_version, developerKey = DEVELOPER_KEY)
     playlist = str(form.youtube_playlist.data)
     playlistid = re.findall("list=(.*)", playlist)[0]
 
