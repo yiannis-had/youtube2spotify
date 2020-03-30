@@ -31,8 +31,10 @@ AUTHORIZATION_URL = (
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
 BASE_URI = "http://youtube-2-spotify.herokuapp.com"
 
+DEVELOPER_KEY = "AIzaSyCrshTarqbNMy48VDdzeAoafBNOT8kZy5I"
+
 SPOTIFY_CLIENT_ID = "112e06f8eabb4e27864d615061ed3af5"
-SPOTIFY_CLIENT_SECRET = "b955a3a7719942459fbce48c398094e4"
+SPOTIFY_CLIENT_SECRET = "67aca387606343cc8054e19993542318"
 SPOTIFY_REDIRECT_URI = BASE_URI + "/callback"
 
 AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -169,7 +171,6 @@ def refresh():
 def me():
     api_service_name = "youtube"
     api_version = "v3"
-    DEVELOPER_KEY = "AIzaSyDfIUhOo4_XmVeRLtTuwI-rwZStbs3CeVk"
 
     youtube = googleapiclient.discovery.build(
         api_service_name, api_version, developerKey = DEVELOPER_KEY)
