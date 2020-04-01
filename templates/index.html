@@ -3,7 +3,6 @@
 {% block header %}
 
 <h1> Youtube2Spotify </h1><br>
-<h3>Click on Submit before logging in with Spotify</h3>
 
 {% endblock %}
 {% block footer %}
@@ -36,8 +35,7 @@
             {{ form.spotify_playlist_name(class="form-control form-control-lg", placeholder="New Playlist") }}
         {% endif %}
       </div>
-      <div class="form-group">
+    <div class="form-group">
         {{ form.submit(class="btn btn-success btn-xs") }}
-<a href="/login" class="btn btn-primary">Login with Spotify</a>
     </div>
 {% endblock %}
