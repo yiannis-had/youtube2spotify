@@ -7,6 +7,7 @@ import googleapiclient.discovery
 from flask import (
     abort,
     Flask,
+    flash,
     make_response,
     redirect,
     render_template,
@@ -29,7 +30,7 @@ AUTHORIZATION_URL = (
     "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent"
 )
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
-BASE_URI = "http://youtube-2-spotify.herokuapp.com"
+BASE_URI = "http://localhost:5000"
 
 DEVELOPER_KEY = "AIzaSyCrshTarqbNMy48VDdzeAoafBNOT8kZy5I"
 
@@ -58,6 +59,8 @@ form = None
 def index():
     global form
     form = InfoForm()
+    if form.validate_on_submit():
+        return redirect(BASE_URI + "/login")
     return render_template("index.html", form=form)
 
 
