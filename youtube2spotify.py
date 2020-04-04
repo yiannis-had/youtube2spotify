@@ -59,20 +59,6 @@ def index():
     return render_template("index.html", form=form)
 
 
-def no_cache(view):
-    @functools.wraps(view)
-    def no_cache_impl(*args, **kwargs):
-        response = flask.make_response(view(*args, **kwargs))
-        response.headers[
-            "Cache-Control"
-        ] = "no-store, no-cache, must-revalidate, max-age=0"
-        response.headers["Pragma"] = "no-cache"
-        response.headers["Expires"] = "-1"
-        return response
-
-    return functools.update_wrapper(no_cache_impl, view)
-
-
 @app.route("/<loginout>")
 def login(loginout):
     """Login or logout user.
@@ -166,7 +152,6 @@ def refresh():
 
 
 @app.route("/me")
-@no_cache
 def me():
     api_service_name = "youtube"
     api_version = "v3"
