@@ -1,8 +1,6 @@
 import re
 import functools
 import flask
-from authlib.integrations.requests_client import OAuth2Session
-import google.oauth2.credentials
 import googleapiclient.discovery
 from flask import (
     abort,
@@ -25,10 +23,7 @@ from wtforms.validators import DataRequired, Length
 app = flask.Flask(__name__)
 app.secret_key = "12345"
 
-ACCESS_TOKEN_URI = "https://www.googleapis.com/oauth2/v4/token"
-AUTHORIZATION_URL = (
-    "https://accounts.google.com/o/oauth2/v2/auth?access_type=offline&prompt=consent"
-)
+
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
 BASE_URI = "http://youtube-2-spotify.herokuapp.com"
 
@@ -171,6 +166,7 @@ def refresh():
 
 
 @app.route("/me")
+@no_cache
 def me():
     api_service_name = "youtube"
     api_version = "v3"
