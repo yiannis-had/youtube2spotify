@@ -27,10 +27,10 @@ app.secret_key = "12345"
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
 BASE_URI = "http://youtube-2-spotify.herokuapp.com"
 
-DEVELOPER_KEY = "AIzaSyCw_J7HZWx7oprGcEGZ1iZ1wE3Gq57BfzA"
+DEVELOPER_KEY = "YOUR_KEY"
 
-SPOTIFY_CLIENT_ID = "112e06f8eabb4e27864d615061ed3af5"
-SPOTIFY_CLIENT_SECRET = "cfdf81b8596c49f6bb2e4edc79337aff"
+SPOTIFY_CLIENT_ID = "YOUR_KEY"
+SPOTIFY_CLIENT_SECRET = "YOUR_KEY"
 SPOTIFY_REDIRECT_URI = BASE_URI + "/callback"
 
 AUTH_URL = "https://accounts.spotify.com/authorize"
