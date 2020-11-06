@@ -195,7 +195,7 @@ def me():
     res = requests.get(ME_URL, headers=headers)
     res_data = res.json()
     payload = {"name": form.spotify_playlist_name.data, "public": False}
-    user_id = res_data["display_name"]
+    user_id = res_data["id"]
     req_playlist = requests.post(
         "https://api.spotify.com/v1/users/" + user_id + "/playlists",
         json=payload,
