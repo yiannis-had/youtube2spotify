@@ -1,6 +1,4 @@
 import re
-import functools
-import flask
 import googleapiclient.discovery
 from flask import (
     abort,
@@ -20,7 +18,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtforms.validators import DataRequired, Length
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 app.secret_key = "12345"
 
 
