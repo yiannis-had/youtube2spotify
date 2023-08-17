@@ -23,7 +23,7 @@ app.secret_key = "12345"
 
 
 AUTHORIZATION_SCOPE = "https://www.googleapis.com/auth/youtube.readonly"
-BASE_URI = "http://youtube-2-spotify.herokuapp.com"
+BASE_URI = "http://localhost:8080"
 
 DEVELOPER_KEY = ""
 
