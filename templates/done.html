@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}done — YouTube2Spotify{% endblock %}
+
+{% block header %}
+<header class="masthead">
+  <h1><em>youtube</em> → <strong>spotify</strong></h1>
+</header>
+{% endblock %}
+
+{% block content %}
+<div class="panel">
+  <p class="done-badge">finished</p>
+
+  <div class="profile">
+    {% if data.images %}
+    <img class="avatar" src="{{ data.images[0].url }}" alt="">
+    {% else %}
+    <div class="avatar-fallback">?</div>
+    {% endif %}
+    <h2>hey <span> <a href="{{ data.external_urls.spotify }}" target="_blank" rel="noopener">{{ data.display_name
+          }}</a></span>, your playlist is ready.</h2>
+  </div>
+
+  <ul class="result-list">
+    <li>
+      <span class="k">match summary</span>
+      <p>{{ matched_count }} of {{ total_count }} songs matched.</p>
+      {% if unmatched_titles %}
+      <details>
+        <summary>show unmatched songs ({{ unmatched_titles|length }})</summary>
+        <ul>
+          {% for title in unmatched_titles %}
+          <li>{{ title }}</li>
+          {% endfor %}
+        </ul>
+      </details>
+      {% endif %}
+    </li>
+    <li>
+      <span class="k">new playlist</span>
+      <a href="{{ playlist.external_urls.spotify }}" target="_blank" rel="noopener">
+        {{ playlist.external_urls.spotify }}
+      </a>
+    </li>
+  </ul>
+
+  <div class="actions">
+    <a href="/" class="btn btn-primary">go back home</a>
+    <a href="/logout" class="btn btn-ghost">log out</a>
+  </div>
+</div>
+{% endblock %}
